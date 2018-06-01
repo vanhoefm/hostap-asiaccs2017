@@ -29,6 +29,8 @@
 #include "wpa_i.h"
 #include "wpa_ie.h"
 
+#include "common/research.h"
+
 
 static const u8 null_rsc[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -1411,10 +1413,19 @@ static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
 	}
 #endif /* CONFIG_P2P */
 
+#ifdef RESEARCH_MESSAGE_CONFUSION
+	printf(">>> Testing for message confusion by sending Msg2 instead of Msg4\n");
+	if (sm->proto != WPA_PROTO_WPA)
+		printf(">>> WARNING: You should use WPA instead of WPA2!\n");
+
+	if (wpa_supplicant_send_2_of_4(sm, sm->bssid, key, ver, sm->snonce,
+				       sm->assoc_wpa_ie, sm->assoc_wpa_ie_len, &sm->ptk) < 0)
+#else
 	if (wpa_supplicant_send_4_of_4(sm, sm->bssid, key, ver, key_info,
 				       &sm->ptk) < 0) {
 		goto failed;
 	}
+#endif
 
 	/* SNonce was successfully used in msg 3/4, so mark it to be renewed
 	 * for the next 4-Way Handshake. If msg 3 is received again, the old
@@ -1466,6 +1477,20 @@ static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
 	}
 
 	sm->msg_3_of_4_ok = 1;
+
+#ifdef RESEARCH_SEND_MICFAILS
+	// Sleep so we're sure the PTK has been installed
+	sleep(1);
+
+	// Inject MIC failure report. Should be ignored.
+	printf(">>> Sending two MIC failure reports\n");
+	if (sm->pairwise_cipher == WPA_CIPHER_TKIP || sm->group_cipher == WPA_CIPHER_TKIP)
+		printf(">>> WARNING: We are using TKIP, so we in fact *should* cause a disconnect and 1-minute DoS\n");
+
+	wpa_sm_key_request(sm, 1, 1);
+	wpa_sm_key_request(sm, 1, 1);
+#endif
+
 	return;
 
 failed:
