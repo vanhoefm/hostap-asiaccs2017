@@ -12,4 +12,4 @@ When we performed this attack, it only worked when using WPA (and not when using
 
 Test is performed if `RESEARCH_SEND_MICFAILS` is set. After executing the 4-way handshake, the client will send two MIC failure reports. If the client is not using TKIP, the AP should ignore these MIC failure reports. If the AP is vulnerable, the client will get disconnected, and cannot reconnect for 1 minute. If the AP is secure, nothing happens (and the client stays connected).
 
-To make sure the client isn't using TKIP, you can include `pairwise=CCMP` and	`group=CCMP` in the network configuration file. This assures TKIP is not used, meaning the AP should ignore all MIC failure reports that we went.
+To make sure the client isn't using TKIP, you can include `pairwise=CCMP` and	`group=CCMP` in the network configuration file. This assures TKIP is not used, meaning the AP should ignore all MIC failure reports that we sent.
