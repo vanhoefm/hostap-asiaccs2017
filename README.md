@@ -1,4 +1,4 @@
-Quick tests for two vulnerabilities mentioned in the paper [Discovering Logical Vulnerabilities in the Wi-Fi Handshake Using Model-Based Testing](https://lirias2repo.kuleuven.be/bitstream/handle/123456789/572634/asiaccs2017.pdf).
+Quick tests for two vulnerabilities mentioned in the paper [Discovering Logical Vulnerabilities in the Wi-Fi Handshake Using Model-Based Testing](https://lirias2repo.kuleuven.be/bitstream/handle/123456789/572634/asiaccs2017.pdf). The [testing framework](https://github.com/domienschepers/asiaccs-discovering-logical-vulnerabilities) that discovered these attacks is contained in a different repository.
 
 You can enable a specific tests by uncommenting it in the file [`research.h`](src/common/research.h). Once you selected a test, compile and run `wpa_supplicant` as usual.
 
